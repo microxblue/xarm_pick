@@ -14,7 +14,13 @@ It utilites OPENCV to locate the cube from the images captured by the webcam, an
   markers for the cube identification. Individual marker can be cut off and then taped onto the 6 faces of the cube.
   I just used a LEGO block instead.
 
-- Install required python modules using pip, such as pybullet, hidapi, opencv-python, scipy, numpy, etc
+- Install required python modules using pip, such as pybullet, hidapi, opencv-python, scipy, numpy, etc.
+  If you get the "No module named 'cv2.aruco'" error during scirpt execution, please try below:
+
+        pip3 uninstall opencv-python
+        pip3 uninstall opencv-contrib-python
+        pip3 install opencv-python
+        pip3 install opencv-contrib-python
 
 - Power up xArm hardware and connect it to host through USB cable.
 
@@ -23,13 +29,16 @@ It utilites OPENCV to locate the cube from the images captured by the webcam, an
 
 - Calibrate the xArm servos:
 
-    python xarm_calibrate.py
+        python xarm_calibrate.py
 
 - Run xArm cube picking up demo:
 
-    python xarm_pickup.py
+        python xarm_pickup.py
 
   Now place the cube at any place on the picking area, and the arm should automatically move to pick it up and then drop it on the side.
+  Press 'ESC' key to exit the script.
+
+  https://user-images.githubusercontent.com/77249025/151719589-9385b0e6-41b3-4121-b478-52cb050d6f5c.mp4
 
 
 ## Acknowledgements ##

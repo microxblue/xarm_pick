@@ -24,7 +24,7 @@ def detect_markers (cap, id = None):
     # marker ID 6 is to mark the cube to be picked up
     marker_rect = None
     retry = 0
-    while retry < 10:
+    while retry < 3:
         _, image = cap.read()  #
         (corners, ids, rejected) = cv2.aruco.detectMarkers(image, aruco_dict, parameters=aruco_params)
         if ids is not None:
@@ -65,6 +65,7 @@ def main ():
 
     # open camera
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
     _, image = cap.read()
 
     # detect pickup area markers
@@ -94,6 +95,8 @@ def main ():
     cpt2 = np.float32([[0.275 , 0.133],  [0.285, -0.098], [0.12, 0.12],  [0.13, -0.11]])
     pickup_matrix = cv2.getPerspectiveTransform(cpt1, cpt2)
 
+    last_not_found = time.time()
+
     while True:
         _, image = cap.read()
         picking_area = cv2.warpPerspective(image, matrix, (cols, rows))
@@ -106,6 +109,8 @@ def main ():
                 pt = transform_pt (matrix, (x,y))
                 cv2.circle(picking_area, pt, 4, (255,0,0), 1)
                 cube_pts.append(pt)
+        else:
+            last_not_found = time.time()
 
         # display picking area
         cv2.imshow('image', picking_area)
@@ -113,7 +118,7 @@ def main ():
         if key == 27:
             break
 
-        if len(cube_pts) > 0:
+        if len(cube_pts) > 0 and (time.time() - last_not_found) > 1.0:
             # calculate cube center point
             x = sum([cube_pts[i][0] for i in range(4)]) // 4
             y = sum([cube_pts[i][1] for i in range(4)]) // 4
